@@ -25,18 +25,16 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 			<!--for wildfly deployment this exclusion must be added-->
-<!--
 			<exclusions>
 				<exclusion>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-starter-tomcat</artifactId>
 				</exclusion>
-				&lt;!&ndash;<exclusion>
+				<!--<exclusion>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-starter-logging</artifactId>
-				</exclusion>&ndash;&gt;
+				</exclusion>-->
 			</exclusions>
--->
 
 		</dependency>
 		<!--
@@ -88,12 +86,12 @@
 
 
 		<!--for wildfly deployment it should be comment out-->
-		<dependency>
+		<!--<dependency>
 			<groupId>org.apache.tomcat.embed</groupId>
 			<artifactId>tomcat-embed-jasper</artifactId>
 			<scope>provided</scope>
 		</dependency>
-
+-->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
@@ -108,11 +106,11 @@
 		</dependency>
 
 		<!--for wildfly it should be provided-->
-<!--		<dependency>-->
-<!--			<groupId>javax.servlet</groupId>-->
-<!--			<artifactId>javax.servlet-api</artifactId>-->
-<!--			<scope>provided</scope>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
