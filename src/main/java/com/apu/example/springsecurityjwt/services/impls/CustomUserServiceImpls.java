@@ -1,21 +1,28 @@
 package com.apu.example.springsecurityjwt.services.impls;
 
+import com.apu.example.springsecurityjwt.Repository.AuthorityRepository;
 import com.apu.example.springsecurityjwt.Repository.CustomUserRepository;
 import com.apu.example.springsecurityjwt.Repository.UserCredentialRepository;
 import com.apu.example.springsecurityjwt.dto.CustomUserDto;
 import com.apu.example.springsecurityjwt.dto.CustomUserSearchCriteria;
 import com.apu.example.springsecurityjwt.dto.UserCreateDto;
+import com.apu.example.springsecurityjwt.entity.Authority;
 import com.apu.example.springsecurityjwt.entity.CustomUser;
 import com.apu.example.springsecurityjwt.entity.UserCredential;
 import com.apu.example.springsecurityjwt.exceptions.GenericException;
 import com.apu.example.springsecurityjwt.services.CustomUserService;
+import com.apu.example.springsecurityjwt.specifications.CustomUserSearchSpecifications;
+import com.apu.example.springsecurityjwt.util.Role;
 import com.apu.example.springsecurityjwt.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 @Service
@@ -24,13 +31,18 @@ public class CustomUserServiceImpls implements CustomUserService {
 
     private final CustomUserRepository customUserRepository;
     private final UserCredentialRepository userCredentialRepository;
+    private final AuthorityRepository authorityRepository;
+    private final PasswordEncoder passwordEncoder;
 
 
     @Autowired
-    CustomUserServiceImpls(CustomUserRepository customUserRepository,
-                           UserCredentialRepository userCredentialRepository){
+    CustomUserServiceImpls(@Qualifier("userPasswordEncoder") PasswordEncoder passwordEncoder, CustomUserRepository customUserRepository,
+                           UserCredentialRepository userCredentialRepository,
+                           AuthorityRepository authorityRepository){
+        this.passwordEncoder = passwordEncoder;
         this.customUserRepository = customUserRepository;
         this.userCredentialRepository = userCredentialRepository;
+        this.authorityRepository = authorityRepository;
     }
 
     private UserCredential createUserCredential(UserCreateDto userCreateDto) throws GenericException{
@@ -40,18 +52,28 @@ public class CustomUserServiceImpls implements CustomUserService {
         }
         UserCredential userCredential = new UserCredential();
         userCredential.setUsername(userCreateDto.getUserName());
-        userCredential.setPassword(userCreateDto.getPassword());
+        Authority authority = authorityRepository.findByName(Role.USER.getValue());
+        userCredential.setAuthorities(Arrays.asList(authority));
+        userCredential.setPassword(passwordEncoder.encode(userCreateDto.getPassword()));
 
         return userCredentialRepository.save(userCredential);
     }
 
     @Override
     public CustomUserDto createUser(UserCreateDto userCreateDto) throws GenericException{
+        Optional<CustomUser> optionalCustomUser = customUserRepository.findCustomUserByUserId(userCreateDto.getUserId());
+        if (optionalCustomUser.isPresent()){
+            log.error("CustomUserServiceImpls::createUser service:  userId: {} already exists", userCreateDto.getUserId());
+            throw new GenericException("User already exists!");
+        }
+
         CustomUser customUser = new CustomUser();
 
-        Utils.copyProperty(userCreateDto, customUser);
+
         UserCredential userCredential = this.createUserCredential(userCreateDto);
         customUser.setUserCredential(userCredential);
+
+        Utils.copyProperty(userCreateDto, customUser);
         customUser = customUserRepository.save(customUser);
 
         CustomUserDto customUserDto = new CustomUserDto();
@@ -96,7 +118,14 @@ public class CustomUserServiceImpls implements CustomUserService {
     public Page<CustomUser> getUserList(CustomUserSearchCriteria criteria, Pageable pageable) throws GenericException{
         try {
 
-            Page<CustomUser> userPage = customUserRepository.getAllUsers(pageable);
+            Page<CustomUser> userPage = customUserRepository.findAll(
+                    CustomUserSearchSpecifications.withId(criteria.getId())
+                    .and(CustomUserSearchSpecifications.withFirstName(criteria.getFirstName()))
+                    .and(CustomUserSearchSpecifications.withLastName(criteria.getLastName()))
+                    .and(CustomUserSearchSpecifications.withEmail(criteria.getEmail()))
+                    ,
+                    pageable
+            );
 
             return userPage;
         }catch (Exception e){

@@ -4,11 +4,7 @@ package com.apu.example.springsecurityjwt.controller;
 import com.apu.example.springsecurityjwt.dto.*;
 import com.apu.example.springsecurityjwt.entity.CustomUser;
 import com.apu.example.springsecurityjwt.exceptions.GenericException;
-import com.apu.example.springsecurityjwt.models.AuthenticationRequest;
-import com.apu.example.springsecurityjwt.models.AuthenticationResponse;
 import com.apu.example.springsecurityjwt.services.CustomUserService;
-import com.apu.example.springsecurityjwt.services.MyUserDetailService;
-import com.apu.example.springsecurityjwt.util.JwtUtil;
 import com.apu.example.springsecurityjwt.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -28,44 +21,26 @@ import java.util.List;
 
 @RestController
 @Slf4j
+@RequestMapping("/api/user")
 public class UserController {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
 
-    @Autowired
-    private MyUserDetailService userDetailService;
-
-    @Autowired
-    private JwtUtil jwtTokenUtil;
 
     @Autowired
     private CustomUserService customUserService;
 
 
-    @RequestMapping({"/hello"})
+    /*@RequestMapping({"/hello"})
     public ResponseEntity<?> hello(){
 
         return ResponseEntity.ok(new String("Welcome!!! Apu Kumar Chakroborti :)"));
         //return "Hello World";
-    }
+    }*/
 
-    @RequestMapping(value = "/authenticate",method = RequestMethod.POST)
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest)throws  Exception{
-        try{
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(),authenticationRequest.getPassword())
-            );
-        }catch(BadCredentialsException e){
-            throw new Exception("Incorrect username and password",e);
-        }
-        final UserDetails userDetails = userDetailService
-                .loadUserByUsername(authenticationRequest.getUsername());
 
-        final String jwt = jwtTokenUtil.generateToken(userDetails);
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
-    }
 
+//    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping
     public ResponseEntity<APIResponse> createUser(@Valid @RequestBody UserCreateDto userCreateDto) throws GenericException {
         log.info("UserController::createUser request body {}", Utils.jsonAsString(userCreateDto));

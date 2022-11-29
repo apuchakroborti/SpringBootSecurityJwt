@@ -14,6 +14,10 @@ import java.io.Serializable;
 public class UserCreateDto implements Serializable {
     private Long id;
 
+    @NotEmpty(message = "User id should not be empty!")
+    @NotNull(message = "User id not be null!")
+    private String userId;
+
     @NotEmpty(message = "First Name should not be empty!")
     @NotNull(message = "First Name not be null!")
     private String firstName;
