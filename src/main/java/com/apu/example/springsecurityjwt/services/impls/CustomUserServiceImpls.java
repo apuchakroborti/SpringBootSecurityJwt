@@ -46,12 +46,12 @@ public class CustomUserServiceImpls implements CustomUserService {
     }
 
     private UserCredential createUserCredential(UserCreateDto userCreateDto) throws GenericException{
-        Optional<UserCredential> optionalUserCredential = userCredentialRepository.findByUsername(userCreateDto.getUserName());
+        Optional<UserCredential> optionalUserCredential = userCredentialRepository.findByUsername(userCreateDto.getUsername());
         if(optionalUserCredential.isPresent()){
             throw new GenericException("User already exists");
         }
         UserCredential userCredential = new UserCredential();
-        userCredential.setUsername(userCreateDto.getUserName());
+        userCredential.setUsername(userCreateDto.getUsername());
         Authority authority = authorityRepository.findByName(Role.USER.getValue());
         userCredential.setAuthorities(Arrays.asList(authority));
         userCredential.setPassword(passwordEncoder.encode(userCreateDto.getPassword()));

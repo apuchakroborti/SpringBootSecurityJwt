@@ -32,7 +32,7 @@ public class UserCreateDto implements Serializable {
 
     @NotEmpty(message = "Username should not be empty!")
     @NotNull(message = "Username should not be null!")
-    private String userName;
+    private String username;
 
     @NotEmpty(message = "Password should not be empty!")
     @NotNull(message = "Password should not be null!")

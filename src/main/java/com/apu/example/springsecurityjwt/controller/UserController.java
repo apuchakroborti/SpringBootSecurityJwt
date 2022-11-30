@@ -24,23 +24,10 @@ import java.util.List;
 @RequestMapping("/api/user")
 public class UserController {
 
-
-
     @Autowired
     private CustomUserService customUserService;
 
-
-    /*@RequestMapping({"/hello"})
-    public ResponseEntity<?> hello(){
-
-        return ResponseEntity.ok(new String("Welcome!!! Apu Kumar Chakroborti :)"));
-        //return "Hello World";
-    }*/
-
-
-
-//    @PreAuthorize("hasAnyAuthority('ADMIN')")
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     @PostMapping
     public ResponseEntity<APIResponse> createUser(@Valid @RequestBody UserCreateDto userCreateDto) throws GenericException {
         log.info("UserController::createUser request body {}", Utils.jsonAsString(userCreateDto));
