@@ -29,7 +29,15 @@ import java.util.List;
 @Order(1)
 public class JwtRequestFilter  extends OncePerRequestFilter {
 
-    List<String> publicURL = Arrays.asList("/service-api/api/auth/authenticate");
+    List<String> publicURL = Arrays.asList(
+            "/service-api/api/auth/authenticate",
+            "/service-api/swagger-ui.html",
+            "/service-api/v3/api-docs/**",
+            "/service-api/v3/api-docs",
+            "/service-api/swagger-ui/**",
+            "/service-api/swagger-ui/",
+            "/service-api/v2/api-docs/**",
+            "/service-api/swagger-resources/**");
 
     @Autowired
     private MyUserDetailService userDetailService;
@@ -40,6 +48,7 @@ public class JwtRequestFilter  extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         //TODO need to add global exception handler
+        System.out.println("Url: "+httpServletRequest.getRequestURI());
         if (publicURL.contains(httpServletRequest.getRequestURI())) {
             filterChain.doFilter(httpServletRequest, httpServletResponse);
         }else {

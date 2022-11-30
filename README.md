@@ -1,3 +1,7 @@
+http://localhost:9090/service-api/v3/api-docs
+
+
+
 Spring Security and JWT simple application
 
 First run the project:
