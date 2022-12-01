@@ -1,15 +1,5 @@
 package com.apu.example.springsecurityjwt.config;
 
-/*import org.springframework.context.annotation.Configuration;
-import org.springframework.security.core.context.SecurityContext;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.ApiKey;
-import springfox.documentation.service.AuthorizationScope;
-import springfox.documentation.service.SecurityReference;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;*/
-
 import io.swagger.annotations.ApiParam;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,10 +17,8 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
-import static springfox.documentation.builders.PathSelectors.regex;
 
 @EnableSwagger2
 @Configuration
