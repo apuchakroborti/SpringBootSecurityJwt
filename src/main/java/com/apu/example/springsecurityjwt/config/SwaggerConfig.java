@@ -24,8 +24,7 @@ import java.util.List;
 @Configuration
 public class SwaggerConfig implements WebMvcConfigurer {
     public static final String AUTHORIZATION_HEADER = "Authorization";
-    @Value("${host.full.dns.auth.link}")
-    private String authLink;
+
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
@@ -41,27 +40,6 @@ public class SwaggerConfig implements WebMvcConfigurer {
                 .directModelSubstitute(Pageable.class, SwaggerPageable.class)
                 .directModelSubstitute(Sort.class, String[].class);
     }
-    private SecurityScheme securityScheme() {
-        GrantType grantType = new AuthorizationCodeGrantBuilder()
-                .tokenEndpoint(new TokenEndpoint(authLink + "/api/auth/authenticate", "accessToken"))
-                .tokenRequestEndpoint(
-                        new TokenRequestEndpoint(authLink + "/api/auth/authenticate", "admin@gmail.com", "1234"))
-                .build();
-
-        SecurityScheme oauth = new OAuthBuilder().name("spring_security")
-                .grantTypes(Arrays.asList(grantType))
-                .scopes(Arrays.asList(scopes()))
-                .build();
-        return oauth;
-    }
-    private AuthorizationScope[] scopes() {
-        AuthorizationScope[] scopes = {
-                new AuthorizationScope("read", "for read operations"),
-                new AuthorizationScope("write", "for write operations")};
-        return scopes;
-    }
-
-
 
     private ApiKey apiKeys(){
         return new ApiKey("JWT", AUTHORIZATION_HEADER, "header");
