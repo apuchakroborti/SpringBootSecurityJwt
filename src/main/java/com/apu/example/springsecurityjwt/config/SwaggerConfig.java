@@ -43,8 +43,8 @@ public class SwaggerConfig implements WebMvcConfigurer {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .securityContexts(Arrays.asList(securityContext()))
-                .securitySchemes(Arrays.asList(securityScheme()))
-//                .securitySchemes(Arrays.asList(apiKeys()))
+//                .securitySchemes(Arrays.asList(securityScheme()))
+                .securitySchemes(Arrays.asList(apiKeys()))
                 .select()
 //                .apis(RequestHandlerSelectors.basePackage("com.apu.example.springsecurityjwt"))
                 .apis(RequestHandlerSelectors.any())
@@ -76,7 +76,9 @@ public class SwaggerConfig implements WebMvcConfigurer {
 
 
     private ApiKey apiKeys(){
-        return new ApiKey("JWT", AUTHORIZATION_HEADER, "header");
+//        return new ApiKey("JWT", AUTHORIZATION_HEADER, "header");
+        return new ApiKey("accessToken", AUTHORIZATION_HEADER, "header");
+
     }
     private SecurityContext securityContext() {
         return SecurityContext.builder()

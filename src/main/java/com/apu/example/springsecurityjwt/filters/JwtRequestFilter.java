@@ -29,7 +29,7 @@ import java.util.List;
 @Order(1)
 public class JwtRequestFilter  extends OncePerRequestFilter {
 
-    List<String> publicURL = Arrays.asList(
+    /*List<String> publicURL = Arrays.asList(
             "/service-api/api/auth/authenticate",
             "/service-api/swagger-ui.html",
             "/service-api/v3/api-docs/**",
@@ -37,7 +37,16 @@ public class JwtRequestFilter  extends OncePerRequestFilter {
             "/service-api/swagger-ui/**",
             "/service-api/swagger-ui/",
             "/service-api/v2/api-docs/**",
-            "/service-api/swagger-resources/**");
+            "/service-api/swagger-resources/**");*/
+    List<String> publicURL = Arrays.asList(
+            "/api/auth/authenticate",
+            "/swagger-ui.html",
+            "/v3/api-docs/**",
+            "/v3/api-docs",
+            "/swagger-ui/**",
+            "/swagger-ui/",
+            "/v2/api-docs/**",
+            "/swagger-resources/**");
 
     @Autowired
     private MyUserDetailService userDetailService;
@@ -48,26 +57,28 @@ public class JwtRequestFilter  extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         //TODO need to add global exception handler
-        System.out.println("Url: "+httpServletRequest.getRequestURI());
-        if (publicURL.contains(httpServletRequest.getRequestURI())) {
+        System.out.println("Url: "+httpServletRequest.getRequestURI().substring(12));
+        if (publicURL.contains(httpServletRequest.getRequestURI().substring(12))) {
             filterChain.doFilter(httpServletRequest, httpServletResponse);
         }else {
             String accessToken = jwtHelper.resolveToken((HttpServletRequest) httpServletRequest);
-            if(Utils.isNullOrEmpty(accessToken))throw new ServletException("Please provide authorization token!");
-            String tokenType = jwtHelper.getTokenType(accessToken);
+            if(accessToken!=null){
+                //            if(Utils.isNullOrEmpty(accessToken))throw new ServletException("Please provide authorization token!");
+                String tokenType = jwtHelper.getTokenType(accessToken);
 
-            if (accessToken != null && !tokenType.equalsIgnoreCase("access_token")) {
-                throw new AuthenticationServiceException("Invalid Token");
-            }
-            Claims claims = jwtHelper.resolveClaims((HttpServletRequest) httpServletRequest);
-            String username = jwtHelper.getUsername(claims);
+                if (accessToken != null && !tokenType.equalsIgnoreCase("access_token")) {
+                    throw new AuthenticationServiceException("Invalid Token");
+                }
+                Claims claims = jwtHelper.resolveClaims((HttpServletRequest) httpServletRequest);
+                String username = jwtHelper.getUsername(claims);
 
-            if (accessToken != null && claims != null
-                    && jwtHelper.validateClaims(claims)) {
-                UserDetails userDetails = this.userDetailService.loadUserByUsername(username);
+                if (accessToken != null && claims != null
+                        && jwtHelper.validateClaims(claims)) {
+                    UserDetails userDetails = this.userDetailService.loadUserByUsername(username);
 
-                Authentication authentication = jwtHelper.getAuthentication(claims, (HttpServletRequest) httpServletRequest, accessToken, userDetails);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                    Authentication authentication = jwtHelper.getAuthentication(claims, (HttpServletRequest) httpServletRequest, accessToken, userDetails);
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
             }
             filterChain.doFilter(httpServletRequest,httpServletResponse);
         }

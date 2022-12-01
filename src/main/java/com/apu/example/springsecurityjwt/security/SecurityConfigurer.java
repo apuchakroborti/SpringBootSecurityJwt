@@ -1,4 +1,4 @@
-package com.apu.example.springsecurityjwt;
+package com.apu.example.springsecurityjwt.security;
 
 import com.apu.example.springsecurityjwt.filters.JwtRequestFilter;
 import com.apu.example.springsecurityjwt.services.MyUserDetailService;
@@ -23,7 +23,7 @@ import java.util.List;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 
-    public static final String[] publicURL = {
+    /*public static final String[] publicURL = {
             "/service-api/api/user/**",
             "/service-api/api/auth/authenticate",
             "/service-api/swagger-ui.html",
@@ -32,6 +32,16 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
             "/service-api/swagger-ui/**",
             "/service-api/v2/api-docs/**",
             "/service-api/swagger-resources/**",
+            "/api/user/**",
+            "/api/auth/authenticate",
+            "/swagger-ui.html",
+            "/v3/api-docs/**",
+            "/v3/api-docs",
+            "/swagger-ui/**",
+            "/v2/api-docs/**",
+            "/swagger-resources/**"};*/
+
+    public static final String[] publicURL = {
             "/api/user/**",
             "/api/auth/authenticate",
             "/swagger-ui.html",
