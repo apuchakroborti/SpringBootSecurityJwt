@@ -1,46 +1,30 @@
-http://localhost:9090/service-api/v3/api-docs
-
-
-
-Spring Security and JWT simple application
+This is a simple spring boot project using spring security, mysql with swagger api documentation
 
 First run the project:
 $ mvn spring-boot:run
 
-Then,
-Using PostMan
-Step 1.
+Swagger Urls:
+http://localhost:9090/service-api/swagger-ui/
+http://localhost:9090/service-api/v3/api-docs
 
-Url: http://localhost:8080/authenticate
-Header:
-Key: Content-Type
-Value: application/json
-Body:
+Using the below link get the access and refresh token:
+http://localhost:9090/service-api/api/auth/authenticate
+
+Request:
+username and password
+
+Response: 
 {
-
-	"username": "foo",
-	"password": "foo"
+  "username": "admin@gmail.com",
+  "accessToken": "accessToken",
+  "refreshToken": "refreshToken",
+  "authorities": [
+    "ADMIN",
+    "USER"
+  ]
 }
 
-Response:
-{
-    "jwt": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmb28iLCJleHAiOjE1ODA5MjQ5MzMsImlhdCI6MTU4MDg4ODkzM30.Zl6GZsI0VSSRcnwK2L8xNAiwqCL2u2s14FwJWOl59ak"
-}
+From swagger authorize tab click authorize copy the accessToken and insert into the value field
+Bearer {{accessToken}}
 
-Step 2.
-Url: http://localhost:8080/hello
-Header:
-Key: Content-Type
-Value: application/json
-
-Key: Authorization
-Value: Bearer from step 1 jwt token value
-Body:
-{
-
-        "username": "foo",
-        "password": "foo"
-}
-
-Response: Hello World
-
+By doing this the accessToken will be passed with the Authorization header 

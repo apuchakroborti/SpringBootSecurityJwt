@@ -49,9 +49,9 @@ public class SwaggerConfig implements WebMvcConfigurer {
 //                .apis(RequestHandlerSelectors.basePackage("com.apu.example.springsecurityjwt"))
                 .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.any())
-                .build();
-//                .directModelSubstitute(Pageable.class, SwaggerPageable.class)
-//                .directModelSubstitute(Sort.class, String[].class);
+                .build()
+                .directModelSubstitute(Pageable.class, SwaggerPageable.class)
+                .directModelSubstitute(Sort.class, String[].class);
     }
     private SecurityScheme securityScheme() {
         GrantType grantType = new AuthorizationCodeGrantBuilder()
@@ -76,8 +76,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
 
 
     private ApiKey apiKeys(){
-//        return new ApiKey("JWT", AUTHORIZATION_HEADER, "header");
-        return new ApiKey("accessToken", AUTHORIZATION_HEADER, "header");
+        return new ApiKey("JWT", AUTHORIZATION_HEADER, "header");
 
     }
     private SecurityContext securityContext() {
@@ -85,27 +84,13 @@ public class SwaggerConfig implements WebMvcConfigurer {
                 .securityReferences(defaultAuth())
                 .build();
     }
-    /*private SecurityContext securityContext() {
-        return SecurityContext.builder()
-                .securityReferences(defaultAuth())
-                .build();
-    }*/
+
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder().title("Jwt Spring Security Swagger").description("")
                 .termsOfServiceUrl("")
-                .contact(new Contact("Apu KUmar Chakroborti", "", ""))
+                .contact(new Contact("Apu Kumar Chakroborti", "https://github.com/apuchakroborti", "apuchakroborti50@gmail.com"))
                 .license("Open Source").licenseUrl("").version("1.0.0").build();
     }
-    /*private ApiInfo apiInfo() {
-        return new ApiInfo("My REST API",
-                "Some custom description of API.",
-                "1.0",
-                "Terms of service",
-                new Contact("Sallo Szrajbman", "www.baeldung.com", "salloszraj@gmail.com"),
-                "License of API",
-                "API license URL",
-                Collections.emptyList());
-    }*/
 
     List<SecurityReference> defaultAuth() {
         AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
@@ -130,16 +115,4 @@ public class SwaggerConfig implements WebMvcConfigurer {
 
     }
 
-
-    /*public Docket userApi(){
-        return new Docket(DocumentationType.SWAGGER_2)
-                .apiInfo(apiInfo())
-                .securityContexts(Arrays.asList(securityContext()))
-                .securitySchemes(Arrays.asList(apiKeys()))
-                .select()
-                .apis(RequestHandlerSelectors.basePackage("com.apu.example.springsecurityjwt"))
-//                .paths(regex("/api/user.*"))
-                .paths(PathSelectors.any())
-                .build();
-    }*/
 }

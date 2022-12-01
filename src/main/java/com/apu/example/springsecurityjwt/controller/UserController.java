@@ -47,6 +47,7 @@ public class UserController {
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @GetMapping
     public ResponseEntity<APIResponse> searchUser(CustomUserSearchCriteria criteria, @PageableDefault(value = 10) Pageable pageable) throws GenericException {
         log.info("UserController::searchUser start...");
@@ -66,6 +67,7 @@ public class UserController {
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @GetMapping(path = "/{id}")
     public ResponseEntity<APIResponse> getUserById(@PathVariable(name = "id") Long id ) throws GenericException {
         log.info("UserController::getUserById start...");
@@ -83,6 +85,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<APIResponse>  updateUserById(@PathVariable(name = "id") Long id, @RequestBody CustomUserDto customUserDto) throws GenericException {
 
         log.info("UserController::updateEmployeeById start...");
@@ -99,6 +102,7 @@ public class UserController {
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<APIResponse> deleteUserById(@PathVariable(name = "id") Long id) throws GenericException {
         log.info("UserController::deleteUserById start...");
