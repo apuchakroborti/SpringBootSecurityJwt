@@ -144,10 +144,16 @@
 			<version>2.6.1</version>
 			<scope>compile</scope>
 		</dependency>-->
-		<dependency>
+		<!--not working this cache-->
+		<!--<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-ehcache</artifactId>
 			<version>5.4.12.Final</version>
+		</dependency>-->
+		<!--Working but not tested properly		-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-cache</artifactId>
 		</dependency>
 	</dependencies>
 

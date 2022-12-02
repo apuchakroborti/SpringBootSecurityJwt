@@ -17,6 +17,8 @@ import com.apu.example.springsecurityjwt.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -85,13 +87,18 @@ public class CustomUserServiceImpls implements CustomUserService {
 
 
     @Override
+    @CacheEvict(value = "user-cache", key = "'UserCache'+#id", beforeInvocation = true)
+    @Cacheable(value = "user-cache", key = "'UserCache'+#id")
     public CustomUserDto findUserById(Long id) throws GenericException{
+        log.info("CustomUserServiceImpls::findUserById start...");
         Optional<CustomUser> optionalCustomUser = customUserRepository.findById(id);
         if(optionalCustomUser.isPresent()){
             CustomUserDto customUserDto = new CustomUserDto();
             Utils.copyProperty(optionalCustomUser.get(), customUserDto);
+            log.info("CustomUserServiceImpls::findUserById end, user found by id : {}", id);
             return customUserDto;
         }
+        log.info("CustomUserServiceImpls::findUserById user not found bny id: {}", id);
         throw new GenericException("User not found!");
     }
 
@@ -117,6 +124,7 @@ public class CustomUserServiceImpls implements CustomUserService {
     @Override
     public Page<CustomUser> getUserList(CustomUserSearchCriteria criteria, Pageable pageable) throws GenericException{
         try {
+            log.info("CustomUserServiceImpls::getUserList start...");
 
             Page<CustomUser> userPage = customUserRepository.findAll(
                     CustomUserSearchSpecifications.withId(criteria.getId())
@@ -126,9 +134,11 @@ public class CustomUserServiceImpls implements CustomUserService {
                     ,
                     pageable
             );
+            log.info("CustomUserServiceImpls::getUserList end");
 
             return userPage;
         }catch (Exception e){
+            log.error("CustomUserServiceImpls::getUserList exception occurred while fetching user");
             throw new GenericException("exception occurred while fetching user list!");
         }
     }

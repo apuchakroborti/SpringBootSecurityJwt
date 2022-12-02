@@ -95,7 +95,7 @@ public class JwtHelper {
 
             String header = new String(decoder.decode(chunks[0]));
             String payload = new String(decoder.decode(chunks[1]));
-            System.out.println("Header: "+header);
+//            System.out.println("Header: "+header);
             try {
                 Map<String, String> result =
                         new ObjectMapper().readValue(header, HashMap.class);

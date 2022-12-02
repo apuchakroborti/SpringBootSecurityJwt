@@ -12,7 +12,6 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class CustomUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
