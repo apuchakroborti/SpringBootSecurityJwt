@@ -144,6 +144,11 @@
 			<version>2.6.1</version>
 			<scope>compile</scope>
 		</dependency>-->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-ehcache</artifactId>
+			<version>5.4.12.Final</version>
+		</dependency>
 	</dependencies>
 
 	<build>
