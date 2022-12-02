@@ -87,9 +87,13 @@ public class CustomUserServiceImpls implements CustomUserService {
 
 
     @Override
-    @CacheEvict(value = "user-cache", key = "'UserCache'+#id", beforeInvocation = true)
-    @Cacheable(value = "user-cache", key = "'UserCache'+#id")
-    public CustomUserDto findUserById(Long id) throws GenericException{
+//    @CacheEvict(value = "user-cache", key = "'UserCache'+#id", beforeInvocation = true)
+//    @Cacheable(value = "user-cache", key = "'UserCache'+#id")
+    @CacheEvict(value="twenty-second-cache", key = "'UserInCache'+#id",
+            condition = "#isCacheable == null || !#isCacheable", beforeInvocation = true)
+    @Cacheable(value="twenty-second-cache", key = "'UserInCache'+#id",
+            condition = "#isCacheable != null && #isCacheable")
+    public CustomUserDto findUserById(Long id, boolean isCacheable) throws GenericException{
         log.info("CustomUserServiceImpls::findUserById start...");
         Optional<CustomUser> optionalCustomUser = customUserRepository.findById(id);
         if(optionalCustomUser.isPresent()){

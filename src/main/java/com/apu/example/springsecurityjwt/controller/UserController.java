@@ -72,7 +72,7 @@ public class UserController {
     public ResponseEntity<APIResponse> getUserById(@PathVariable(name = "id") Long id ) throws GenericException {
         log.info("UserController::getUserById start...");
 
-        CustomUserDto  customUserDto = customUserService.findUserById(id);
+        CustomUserDto  customUserDto = customUserService.findUserById(id, true);
 
         APIResponse<CustomUserDto> responseDTO = APIResponse
                 .<CustomUserDto>builder()

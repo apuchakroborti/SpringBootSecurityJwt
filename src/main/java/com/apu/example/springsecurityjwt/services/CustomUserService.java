@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface CustomUserService {
     CustomUserDto createUser(UserCreateDto userCreateDto) throws GenericException;
-    CustomUserDto findUserById(Long id) throws GenericException;
+    CustomUserDto findUserById(Long id, boolean isCacheable) throws GenericException;
     CustomUserDto updateUserById(Long id, CustomUserDto employeeBean) throws GenericException;
     Page<CustomUser> getUserList(CustomUserSearchCriteria criteria, Pageable pageable) throws GenericException;
     Boolean  deleteUserById(Long id) throws GenericException;
