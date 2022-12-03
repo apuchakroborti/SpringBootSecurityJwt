@@ -2,6 +2,7 @@ package com.apu.example.springsecurityjwt.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,6 +15,7 @@ import java.util.*;
 import java.util.function.Function;
 
 @Service
+@Slf4j
 public class JwtHelper {
 
     private String SECRET_KEY="secret";
@@ -40,6 +42,8 @@ public class JwtHelper {
     }
 
     public String createToken(UserDetails userDetails, String tokenType, List<String> authorities){
+        log.info("JwtHelper::createToken start...");
+        log.info("JwtHelper::createToken username: {}, tokenType: {}", userDetails.getUsername(), tokenType);
         Date tokenValidity;
         if(tokenType.equals("access_token")){
             tokenValidity = new Date(System.currentTimeMillis()+1000*60*60*10);
@@ -51,6 +55,7 @@ public class JwtHelper {
         claims.put("authorities", authorities);
 
 
+        log.info("JwtHelper::createToken end\n");
         return Jwts.builder()
                 .setClaims(claims)
                 .setHeaderParam("type", tokenType)
@@ -65,7 +70,14 @@ public class JwtHelper {
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
     public Authentication getAuthentication(Claims claims, HttpServletRequest request, String token, UserDetails userDetails) {
+        log.info("JwtHelper::getAuthentication start...");
+        log.info("JwtHelper::getAuthentication --> username in the userDetails: {}", userDetails.getUsername());
         String username = getUsername(claims);
+        log.info("JwtHelper::getAuthentication --> username in the token: {}", username);
+        if(!userDetails.getUsername().equals(username)){
+            log.info("JwtHelper::getAuthentication --> username in the token and userDetails mismatched");
+            return new UsernamePasswordAuthenticationToken(null, null, null);
+        }
         String tokenType = getTokenType(token);
 
         List<String> authorities;
@@ -78,6 +90,7 @@ public class JwtHelper {
 
         request.getSession().setAttribute("userDetails", userDetails);
         request.getSession().setAttribute("tokenType", tokenType);
+        log.info("JwtHelper::getAuthentication end for username:{}\n", userDetails.getUsername());
         return new UsernamePasswordAuthenticationToken(userDetails, "", grantedAuthorities);
     }
     public String getUsername(Claims claims) {

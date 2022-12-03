@@ -48,8 +48,10 @@ public class CustomUserServiceImpls implements CustomUserService {
     }
 
     private UserCredential createUserCredential(UserCreateDto userCreateDto) throws GenericException{
+        log.info("CustomUserServiceImpls::createUserCredential --> start...");
         Optional<UserCredential> optionalUserCredential = userCredentialRepository.findByUsername(userCreateDto.getUsername());
         if(optionalUserCredential.isPresent()){
+            log.debug("CustomUserServiceImpls::createUserCredential --> user already exists for the username: {}", userCreateDto.getUsername());
             throw new GenericException("User already exists");
         }
         UserCredential userCredential = new UserCredential();
@@ -58,11 +60,13 @@ public class CustomUserServiceImpls implements CustomUserService {
         userCredential.setAuthorities(Arrays.asList(authority));
         userCredential.setPassword(passwordEncoder.encode(userCreateDto.getPassword()));
 
+        log.info("CustomUserServiceImpls::createUserCredential --> end");
         return userCredentialRepository.save(userCredential);
     }
 
     @Override
     public CustomUserDto createUser(UserCreateDto userCreateDto) throws GenericException{
+        log.info("CustomUserServiceImpls::createUser --> start...");
         Optional<CustomUser> optionalCustomUser = customUserRepository.findCustomUserByUserId(userCreateDto.getUserId());
         if (optionalCustomUser.isPresent()){
             log.error("CustomUserServiceImpls::createUser service:  userId: {} already exists", userCreateDto.getUserId());
@@ -81,6 +85,8 @@ public class CustomUserServiceImpls implements CustomUserService {
         CustomUserDto customUserDto = new CustomUserDto();
 
         Utils.copyProperty(customUser, customUserDto);
+
+        log.info("CustomUserServiceImpls::createUser --> end");
 
         return customUserDto;
     }
@@ -108,6 +114,7 @@ public class CustomUserServiceImpls implements CustomUserService {
 
     @Override
     public CustomUserDto updateUserById(Long id, CustomUserDto customUserDto) throws GenericException{
+        log.info("CustomUserServiceImpls::updateUserById --> start for the user id: {}", id);
         Optional<CustomUser> optionalCustomUser = customUserRepository.findById(id);
         if(optionalCustomUser.isPresent()){
             CustomUser customUser = optionalCustomUser.get();
@@ -119,8 +126,10 @@ public class CustomUserServiceImpls implements CustomUserService {
             }
             customUserRepository.save(customUser);
             Utils.copyProperty(customUser, customUserDto);
+            log.info("CustomUserServiceImpls::updateUserById --> end for the user id: {}", id);
             return customUserDto;
         }
+        log.info("CustomUserServiceImpls::updateUserById --> user not found with the user id: {}", id);
         throw new GenericException("User not found!");
 
     }
@@ -149,12 +158,14 @@ public class CustomUserServiceImpls implements CustomUserService {
 
     @Override
     public Boolean  deleteUserById(Long id) throws GenericException{
-
+        log.info("CustomUserServiceImpls::deleteUserById start for the user id: {}", id);
         Optional<CustomUser> optionalCustomUser = customUserRepository.findById(id);
         if(optionalCustomUser.isPresent()){
+            log.info("CustomUserServiceImpls::deleteUserById done for the user id: {}", id);
             customUserRepository.delete(optionalCustomUser.get());
             return true;
         }
+        log.info("CustomUserServiceImpls::deleteUserById --> user not found with the user id: {}", id);
         throw new GenericException("User not found!");
 
     }

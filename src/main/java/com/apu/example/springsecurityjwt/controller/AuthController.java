@@ -4,6 +4,7 @@ import com.apu.example.springsecurityjwt.models.AuthenticationRequest;
 import com.apu.example.springsecurityjwt.models.AuthenticationResponse;
 import com.apu.example.springsecurityjwt.services.MyUserDetailService;
 import com.apu.example.springsecurityjwt.util.JwtHelper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/auth")
+@Slf4j
 public class AuthController {
 
     @Autowired
@@ -41,17 +43,20 @@ public class AuthController {
 
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public ResponseEntity<AuthenticationResponse> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest)throws  Exception{
+        log.info("AuthController::createAuthenticationToken --> start for the username: {}", authenticationRequest.getUsername());
         try{
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())
             );
         }catch(BadCredentialsException e){
+            log.error("AuthController::createAuthenticationToken --> bad credentials for the username: {}", authenticationRequest.getUsername());
             throw new Exception("Incorrect username and password",e);
         }
         final UserDetails userDetails = userDetailService
                 .loadUserByUsername(authenticationRequest.getUsername());
 
         if(!passwordEncoder.matches(authenticationRequest.getPassword(), userDetails.getPassword())){
+            log.error("AuthController::createAuthenticationToken --> Username or password is incorrect! for the username: {}", authenticationRequest.getUsername());
             throw new Exception("Username or password is incorrect!");
         }
         List<GrantedAuthority> authorities = userDetails.getAuthorities().stream()
@@ -63,6 +68,7 @@ public class AuthController {
         final String accessToken = jwtHelper.createToken(userDetails, "access_token", authorityList);
         final String refreshToken = jwtHelper.createToken(userDetails, "refresh_token", authorityList);
 
+        log.info("AuthController::createAuthenticationToken --> end for the username: {} \n", authenticationRequest.getUsername());
         return ResponseEntity.ok(new AuthenticationResponse(userDetails.getUsername(), accessToken, refreshToken, authorityList));
     }
 }

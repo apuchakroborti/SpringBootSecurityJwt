@@ -1,6 +1,5 @@
 package com.apu.example.springsecurityjwt.config;
 
-import com.apu.example.springsecurityjwt.handler.APIFilter;
 import net.sf.ehcache.config.CacheConfiguration;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
@@ -13,11 +12,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableCaching
 public class APICacheConfig extends CachingConfigurerSupport {
-
-    @Bean
-    public APIFilter aPIFilter() {
-        return new APIFilter();
-    }
 
     @Bean
     public net.sf.ehcache.CacheManager ehCacheManager(){
