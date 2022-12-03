@@ -6,6 +6,9 @@ import com.apu.example.springsecurityjwt.entity.CustomUser;
 import com.apu.example.springsecurityjwt.exceptions.GenericException;
 import com.apu.example.springsecurityjwt.services.CustomUserService;
 import com.apu.example.springsecurityjwt.util.Utils;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,6 +25,7 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequestMapping("/api/user")
+@ApiOperation(value = "/api/user", tags = "User Controller")
 public class UserController {
 
     @Autowired
@@ -29,6 +33,13 @@ public class UserController {
 
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @PostMapping
+    @ApiOperation(value = "Insert user record", response = CustomUserDto.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "SUCCESS", response = CustomUserDto.class),
+            @ApiResponse(code = 401, message = "UNAUTHORIZED", response = ErrorDto.class),
+            @ApiResponse(code = 403, message = "FORBIDDEN", response = ErrorDto.class),
+            @ApiResponse(code = 404, message = "NOT FOUND", response = ErrorDto.class),
+    })
     public ResponseEntity<APIResponse> createUser(@Valid @RequestBody UserCreateDto userCreateDto) throws GenericException {
         log.info("UserController::createUser request body {}", Utils.jsonAsString(userCreateDto));
 
@@ -49,6 +60,13 @@ public class UserController {
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @GetMapping
+    @ApiOperation(value = "Search user record", response = Pageable.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "SUCCESS", response = CustomUserDto.class),
+            @ApiResponse(code = 401, message = "UNAUTHORIZED", response = ErrorDto.class),
+            @ApiResponse(code = 403, message = "FORBIDDEN", response = ErrorDto.class),
+            @ApiResponse(code = 404, message = "NOT FOUND", response = ErrorDto.class),
+    })
     public ResponseEntity<APIResponse> searchUser(CustomUserSearchCriteria criteria, @PageableDefault(value = 10) Pageable pageable) throws GenericException {
         log.info("UserController::searchUser start...");
 
@@ -69,6 +87,13 @@ public class UserController {
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @GetMapping(path = "/{id}")
+    @ApiOperation(value = "Get user record by id", response = CustomUserDto.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "SUCCESS", response = CustomUserDto.class),
+            @ApiResponse(code = 401, message = "UNAUTHORIZED", response = ErrorDto.class),
+            @ApiResponse(code = 403, message = "FORBIDDEN", response = ErrorDto.class),
+            @ApiResponse(code = 404, message = "NOT FOUND", response = ErrorDto.class),
+    })
     public ResponseEntity<APIResponse> getUserById(@PathVariable(name = "id") Long id ) throws GenericException {
         log.info("UserController::getUserById start...");
 
@@ -86,6 +111,13 @@ public class UserController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @ApiOperation(value = "Update user record by id", response = CustomUserDto.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "SUCCESS", response = CustomUserDto.class),
+            @ApiResponse(code = 401, message = "UNAUTHORIZED", response = ErrorDto.class),
+            @ApiResponse(code = 403, message = "FORBIDDEN", response = ErrorDto.class),
+            @ApiResponse(code = 404, message = "NOT FOUND", response = ErrorDto.class),
+    })
     public ResponseEntity<APIResponse>  updateUserById(@PathVariable(name = "id") Long id, @RequestBody CustomUserDto customUserDto) throws GenericException {
 
         log.info("UserController::updateEmployeeById start...");
@@ -104,6 +136,13 @@ public class UserController {
 
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @DeleteMapping("/{id}")
+    @ApiOperation(value = "Delete user record by id", response = Boolean.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "SUCCESS", response = Boolean.class),
+            @ApiResponse(code = 401, message = "UNAUTHORIZED", response = ErrorDto.class),
+            @ApiResponse(code = 403, message = "FORBIDDEN", response = ErrorDto.class),
+            @ApiResponse(code = 404, message = "NOT FOUND", response = ErrorDto.class),
+    })
     public ResponseEntity<APIResponse> deleteUserById(@PathVariable(name = "id") Long id) throws GenericException {
         log.info("UserController::deleteUserById start...");
 
