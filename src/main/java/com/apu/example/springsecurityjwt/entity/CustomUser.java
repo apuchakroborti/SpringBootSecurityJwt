@@ -3,6 +3,7 @@ package com.apu.example.springsecurityjwt.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class CustomUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,6 +1,7 @@
 package com.apu.example.springsecurityjwt.controller;
 
 
+import com.apu.example.springsecurityjwt.aop.TrackExecutionTime;
 import com.apu.example.springsecurityjwt.dto.*;
 import com.apu.example.springsecurityjwt.entity.CustomUser;
 import com.apu.example.springsecurityjwt.exceptions.GenericException;
@@ -49,6 +50,7 @@ public class UserController {
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @GetMapping
+    @TrackExecutionTime
     public ResponseEntity<APIResponse> searchUser(CustomUserSearchCriteria criteria, @PageableDefault(value = 10) Pageable pageable) throws GenericException {
         log.info("UserController::searchUser start...");
 
@@ -69,6 +71,7 @@ public class UserController {
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @GetMapping(path = "/{id}")
+    @TrackExecutionTime
     public ResponseEntity<APIResponse> getUserById(@PathVariable(name = "id") Long id ) throws GenericException {
         log.info("UserController::getUserById start...");
 
